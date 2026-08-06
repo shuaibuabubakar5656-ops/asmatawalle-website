@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Sign Up | A.S Matawalle</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+  <div class="auth-wrapper">
+    <div class="auth-card" style="max-width:480px;">
+      <div class="text-center mb-3">
+        <img src="images/logo.png" alt="A.S Matawalle Logo" height="60">
+        <h5 class="mt-2 fw-bold" style="color:var(--primary);">Create Student Account</h5>
+        <p class="text-muted small">Register once — log in from any phone.</p>
+      </div>
+      <div class="alert alert-info small">
+        Use the <strong>same email</strong> you used on the admission form so your application links to this account.
+      </div>
+      <form id="signupForm" novalidate>
+        <div class="mb-3">
+          <label class="form-label" for="suName">Full Name *</label>
+          <input type="text" class="form-control" name="name" id="suName" required autocomplete="name">
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="suEmail">Email * (same as admission form)</label>
+          <input type="email" class="form-control" name="email" id="suEmail" required autocomplete="email">
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="suPhone">Phone *</label>
+          <input type="tel" class="form-control" name="phone" id="suPhone" required autocomplete="tel">
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="suPassword">Password *</label>
+          <div class="input-group">
+            <input type="password" class="form-control" name="password" id="suPassword" required minlength="6" autocomplete="new-password">
+            <button class="btn btn-outline-secondary toggle-password" type="button" aria-label="Show password"><i class="bi bi-eye"></i></button>
+          </div>
+          <div class="form-text">Minimum 6 characters</div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="suConfirm">Confirm Password *</label>
+          <input type="password" class="form-control" name="confirm" id="suConfirm" required minlength="6" autocomplete="new-password">
+        </div>
+        <button type="submit" class="btn btn-gold w-100 py-2" id="signupBtn">
+          <span class="btn-text">Sign Up &amp; Go to Dashboard</span>
+          <span class="spinner-border spinner-border-sm d-none" role="status"></span>
+        </button>
+        <div class="alert alert-danger d-none mt-3" id="signupError"></div>
+        <div class="alert alert-success d-none mt-3" id="signupSuccess">
+          Account created successfully! You can now log in from any phone. Redirecting…
+        </div>
+      </form>
+      <p class="text-center mt-3 mb-0"><a href="student-login.html" class="small">Already have an account? Login</a></p>
+      <p class="text-center mt-2 mb-0 small text-muted">
+        <i class="bi bi-cloud-check"></i> Your account is saved online — register on one phone, log in on another.
+      </p>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/portal-data.js"></script>
+  <script>
+    document.getElementById('signupForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const name = this.name.value.trim();
+      const email = this.email.value.trim().toLowerCase();
+      const phone = this.phone.value.trim();
+      const pass = this.password.value;
+      const conf = this.confirm.value;
+      const errBox = document.getElementById('signupError');
+      const okBox = document.getElementById('signupSuccess');
+      const btn = document.getElementById('signupBtn');
+
+      errBox.classList.add('d-none');
+      okBox.classList.add('d-none');
+
+      if (pass !== conf) {
+        errBox.textContent = 'Passwords do not match.';
+        errBox.classList.remove('d-none');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.querySelector('.btn-text').textContent = 'Creating account…';
+      btn.querySelector('.spinner-border').classList.remove('d-none');
+
+      try {
+        const result = await ASM.registerStudent({ name, email, phone, password: pass });
+
+        if (!result.ok) {
+          errBox.textContent = result.message;
+          errBox.classList.remove('d-none');
+          btn.disabled = false;
+          btn.querySelector('.btn-text').textContent = 'Sign Up & Go to Dashboard';
+          btn.querySelector('.spinner-border').classList.add('d-none');
+          return;
+        }
+
+        ASM.setStudentSession(result.account);
+        okBox.classList.remove('d-none');
+        this.reset();
+
+        setTimeout(function() {
+          window.location.href = 'student-dashboard.html';
+        }, 1000);
+      } catch (err) {
+        errBox.textContent = 'Network error. Please check your internet and try again.';
+        errBox.classList.remove('d-none');
+        btn.disabled = false;
+        btn.querySelector('.btn-text').textContent = 'Sign Up & Go to Dashboard';
+        btn.querySelector('.spinner-border').classList.add('d-none');
+      }
+    });
+  </script>
+</body>
+</html>

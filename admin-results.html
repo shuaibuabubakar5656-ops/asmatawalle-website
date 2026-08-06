@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Results | A.S Matawalle Portal</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <link href="css/portal.css" rel="stylesheet">
+</head>
+<body class="portal-body">
+  <div class="portal-topbar">
+    <div class="d-flex align-items-center gap-2">
+      <button class="btn btn-sm text-white d-lg-none" id="sidebarToggleBtn"><i class="bi bi-list fs-5"></i></button>
+      
+      <div class="brand-text d-none d-sm-block">A.S MATAWALLE PORTAL<small>Results</small></div>
+    </div>
+    <div class="user-chip"><i class="bi bi-person-circle"></i><span>Shuaibu Abubakar — CEO &amp; Admin</span></div>
+  </div>
+  <div class="d-flex">
+    <aside class="portal-sidebar-fixed" id="adminSidebar">
+      <div class="nav-section">Main</div>
+      <a class="nav-link" href="admin-dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a>
+      <div class="nav-section">Academics</div>
+      <a class="nav-link active" href="admin-results.html"><i class="bi bi-upload"></i> Upload Results</a>
+      <a class="nav-link" href="admin-materials.html"><i class="bi bi-folder2-open"></i> Upload Materials</a>
+      <div class="nav-section">Students</div>
+      <a class="nav-link" href="admin-students.html"><i class="bi bi-people"></i> Manage Students</a>
+      <a class="nav-link" href="index.html"><i class="bi bi-box-arrow-left"></i> Logout</a>
+    </aside>
+    <main class="portal-main">
+      <div class="page-header-portal">
+        <div>
+          <h1>Upload Examination Results</h1>
+          <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="admin-dashboard.html">Dashboard</a></li><li class="breadcrumb-item active">Results</li></ol></nav>
+        </div>
+      </div>
+      <div class="alert alert-info small">
+        <i class="bi bi-info-circle me-1"></i>
+        Results you upload will be visible to the student in their <strong>Student Portal → Examination Result</strong> section.
+      </div>
+      <div class="row g-4">
+        <div class="col-lg-6">
+          <div class="portal-card">
+            <div class="card-header-p">Upload Result (Single Student)</div>
+            <div class="card-body-p">
+              <form id="resultForm">
+                <div class="mb-3">
+                  <label class="form-label-p">Student ID / Full Name *</label>
+                  <input type="text" class="form-control form-control-p" name="student" required placeholder="e.g. ASM/2026/001 or student name">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label-p">Programme</label>
+                  <select class="form-select form-select-p" name="programme">
+                    <option>6 Months Professional Diploma</option>
+                    <option>3 Months Certificate</option>
+                  </select>
+                </div>
+                <div class="row g-2 mb-3">
+                  <div class="col-6">
+                    <label class="form-label-p">Score (%)</label>
+                    <input type="number" class="form-control form-control-p" name="score" min="0" max="100" required>
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label-p">Grade</label>
+                    <select class="form-select form-select-p" name="grade">
+                      <option>Distinction</option>
+                      <option>Credit</option>
+                      <option>Pass</option>
+                      <option>Fail</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label-p">Remarks</label>
+                  <textarea class="form-control form-control-p" name="remarks" rows="2"></textarea>
+                </div>
+                <button type="submit" class="btn btn-portal-primary w-100"><i class="bi bi-upload me-1"></i> Upload Result</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="portal-card">
+            <div class="card-header-p">Uploaded Results <span class="badge bg-secondary" id="resCount">0</span></div>
+            <div class="card-body-p p-0">
+              <div class="empty-state py-4" id="resEmpty">
+                <i class="bi bi-clipboard-data"></i>
+                <h6 class="mt-2">No results uploaded yet</h6>
+                <p class="text-muted small mb-0">Upload results after examinations. Students will see their own results in the Student Portal.</p>
+              </div>
+              <table class="table-portal d-none" id="resTable">
+                <thead><tr><th>Student</th><th>Score</th><th>Grade</th><th>Date</th></tr></thead>
+                <tbody id="resBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.getElementById('sidebarToggleBtn')?.addEventListener('click', () => document.getElementById('adminSidebar').classList.toggle('show'));
+    document.getElementById('resultForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const student = this.student.value;
+      const score = this.score.value;
+      const grade = this.grade.value;
+
+      document.getElementById('resEmpty').classList.add('d-none');
+      document.getElementById('resTable').classList.remove('d-none');
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = '<td>' + student + '</td><td>' + score + '%</td><td>' + grade + '</td><td>6 Aug 2026</td>';
+      document.getElementById('resBody').prepend(tr);
+
+      let results = JSON.parse(localStorage.getItem('asm_results') || '[]');
+      results.unshift({ student, score, grade, date: '6 Aug 2026' });
+      localStorage.setItem('asm_results', JSON.stringify(results));
+
+      document.getElementById('resCount').textContent = document.getElementById('resBody').children.length;
+      showToast('Result uploaded for ' + student);
+      this.reset();
+    });
+    function showToast(msg) {
+      const t = document.createElement('div');
+      t.className = 'alert alert-success position-fixed top-0 end-0 m-3 shadow';
+      t.style.zIndex = 9999;
+      t.textContent = msg;
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 3000);
+    }
+  </script>
+</body>
+</html>

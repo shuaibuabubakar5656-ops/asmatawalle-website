@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment | A.S Matawalle</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+  <div class="top-bar">
+    <div class="container d-flex justify-content-between align-items-center flex-wrap">
+      <div><i class="bi bi-telephone-fill me-1"></i> <a href="tel:08082917651">08082917651</a></div>
+      <div class="d-none d-md-block">A.S Matawalle Computer Business Centre</div>
+    </div>
+  </div>
+  <nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center" href="index.html"><img src="images/logo.png" alt="Logo"><span class="d-none d-lg-inline">A.S MATAWALLE</span></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"><span class="navbar-toggler-icon"></span></button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto align-items-lg-center">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="computer-training.html">Courses</a></li>
+          <li class="nav-item"><a class="nav-link" href="admission.html">Admission</a></li>
+          <li class="nav-item"><a class="nav-link active" href="payment.html">Payment</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+          <li class="nav-item ms-lg-2"><a class="btn btn-gold btn-sm" href="admission.html">Apply Now</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-banner">
+    <div class="container">
+      <h1>Make Payment</h1>
+      <nav aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="index.html">Home</a></li><li class="breadcrumb-item active">Payment</li></ol></nav>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-title">
+        <h2>Select Programme & Pay</h2>
+        <p>Choose your programme, transfer the exact amount, then upload your payment receipt.</p>
+      </div>
+
+      <div class="row g-4 mb-5">
+        <div class="col-md-6">
+          <div class="payment-box selected h-100">
+            <input type="radio" name="plan" value="six" class="d-none" checked>
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <h5 class="fw-bold" style="color:var(--primary);">Six Months Professional Diploma</h5>
+                <p class="text-muted small mb-2">Full professional package</p>
+              </div>
+              <span class="badge bg-success">Popular</span>
+            </div>
+            <div class="price-tag mt-2">₦60,000</div>
+            <ul class="mt-3 mb-0 text-muted small">
+              <li>Registration</li>
+              <li>Training</li>
+              <li>Practical sessions</li>
+              <li>Certificate</li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="payment-box h-100">
+            <input type="radio" name="plan" value="three" class="d-none">
+            <h5 class="fw-bold" style="color:var(--primary);">Three Months Certificate</h5>
+            <p class="text-muted small mb-2">Essential skills package</p>
+            <div class="price-tag mt-2">₦30,000</div>
+            <ul class="mt-3 mb-0 text-muted small">
+              <li>Registration</li>
+              <li>Training</li>
+              <li>Certificate</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-lg-6">
+          <div class="bg-white rounded-4 shadow p-4 h-100">
+            <h5 class="fw-bold mb-3" style="color:var(--primary);"><i class="bi bi-bank me-2"></i>Bank Transfer Details</h5>
+            <div class="alert alert-gold">
+              <p class="mb-1"><strong>Bank Name:</strong> Opay</p>
+              <p class="mb-1"><strong>Account Name:</strong> Shuaibu Abubakar</p>
+              <p class="mb-1"><strong>Account Number:</strong> 8082917651</p>
+              <p class="mb-0 small text-muted">Transfer the exact course fee and upload your receipt below.</p>
+            </div>
+            <p class="text-muted small">After transfer, take a clear screenshot or photo of the receipt and upload it below. Include your full name as narration if possible.</p>
+            <p class="mb-0"><i class="bi bi-telephone me-1"></i> For payment confirmation: <strong>08082917651</strong></p>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="bg-white rounded-4 shadow p-4 h-100">
+            <h5 class="fw-bold mb-3" style="color:var(--primary);"><i class="bi bi-cloud-upload me-2"></i>Upload Payment Receipt</h5>
+            <form class="needs-validation" novalidate>
+              <div class="mb-3">
+                <label class="form-label">Full Name (as on admission form) *</label>
+                <input type="text" class="form-control" name="payerName" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Phone Number *</label>
+                <input type="tel" class="form-control" name="payerPhone" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Programme Paid For *</label>
+                <select class="form-select" name="paidProgramme" required>
+                  <option value="">Select</option>
+                  <option>Six Months Professional Diploma – ₦60,000</option>
+                  <option>Three Months Certificate – ₦30,000</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Amount Paid (₦) *</label>
+                <input type="number" class="form-control" name="amount" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Payment Receipt (Image/PDF) *</label>
+                <input type="file" class="form-control" id="paymentReceipt" name="receipt" accept="image/*,.pdf" required>
+                <small class="text-muted" id="receiptLabel">No file chosen</small>
+              </div>
+              <button type="submit" class="btn btn-gold w-100"><i class="bi bi-upload me-2"></i>Submit Receipt</button>
+              <div class="alert alert-success form-success d-none mt-3">
+                Receipt uploaded. We will verify and update your admission status shortly.
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4"><img src="images/logo.png" alt="Logo" height="60" class="mb-3"><p class="small">Reliable Service, Lasting Solutions.</p></div>
+        <div class="col-6 col-lg-2"><h5>Links</h5><a href="index.html">Home</a><a href="admission.html">Admission</a></div>
+        <div class="col-6 col-lg-2"><h5>Help</h5><a href="contact.html">Contact</a><a href="tel:08082917651">Call Us</a></div>
+        <div class="col-lg-4"><h5>Contact</h5><p class="small">08082917651 | asmatawalle@gmail.com</p></div>
+      </div>
+      <div class="footer-bottom"><p class="mb-0">&copy; 2026 A.S Matawalle Computer Business Centre Udawa.</p></div>
+    </div>
+  </footer>
+  <a href="https://wa.me/2348082917651" class="whatsapp-float" target="_blank"><i class="bi bi-whatsapp"></i></a>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

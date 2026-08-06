@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard | A.S Matawalle Portal</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <link href="css/portal.css" rel="stylesheet">
+</head>
+<body class="portal-body">
+  <div class="portal-topbar">
+    <div class="d-flex align-items-center gap-2">
+      <button class="btn btn-sm text-white d-lg-none" id="sidebarToggleBtn"><i class="bi bi-list fs-5"></i></button>
+      <div class="brand-text d-none d-sm-block">A.S MATAWALLE STUDENT PORTAL<small>Computer Business Centre Udawa</small></div>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+      <a href="index.html" class="text-white small d-none d-md-inline"><i class="bi bi-globe me-1"></i>Website</a>
+      <div class="user-chip"><i class="bi bi-person-circle"></i><span id="stuNameChip">Student</span></div>
+      <a href="student-login.html" class="text-white small" onclick="ASM.clearStudentSession()"><i class="bi bi-box-arrow-right"></i></a>
+    </div>
+  </div>
+
+  <div class="d-flex">
+    <aside class="portal-sidebar-fixed" id="adminSidebar">
+      <div class="nav-section">Main</div>
+      <a class="nav-link active" href="student-dashboard.html"><i class="bi bi-speedometer2"></i> Dashboard</a>
+      <div class="nav-section">My Academics</div>
+      <a class="nav-link" href="#admission"><i class="bi bi-person-badge"></i> Admission &amp; ID Card</a>
+      <a class="nav-link" href="#payment"><i class="bi bi-cash-stack"></i> Make Payment</a>
+      <a class="nav-link" href="#materials"><i class="bi bi-folder2-open"></i> Reading Materials</a>
+      <a class="nav-link" href="#results"><i class="bi bi-bar-chart"></i> My Results</a>
+      <div class="nav-section">Account</div>
+      <a class="nav-link" href="index.html" onclick="ASM.clearStudentSession()"><i class="bi bi-box-arrow-left"></i> Logout</a>
+    </aside>
+
+    <main class="portal-main">
+      <div class="page-header-portal">
+        <div>
+          <h1>Welcome, <span id="welcomeName">Student</span></h1>
+          <p class="text-muted small mb-0">Your admission, ID card, materials and results appear here after Admin approval and uploads.</p>
+        </div>
+      </div>
+
+      <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3"><div class="stat-card-p"><div class="icon-box bg-blue"><i class="bi bi-journal-bookmark"></i></div><div><div class="stat-value" style="font-size:0.95rem;" id="statProg">—</div><div class="stat-label">Programme</div></div></div></div>
+        <div class="col-6 col-md-3"><div class="stat-card-p"><div class="icon-box bg-gold"><i class="bi bi-hourglass"></i></div><div><div class="stat-value" style="font-size:0.95rem;" id="statStatus">—</div><div class="stat-label">Admission</div></div></div></div>
+        <div class="col-6 col-md-3"><div class="stat-card-p"><div class="icon-box bg-green"><i class="bi bi-person-badge"></i></div><div><div class="stat-value" style="font-size:0.85rem;" id="statAdmNo">—</div><div class="stat-label">Admission No.</div></div></div></div>
+        <div class="col-6 col-md-3"><div class="stat-card-p"><div class="icon-box bg-purple"><i class="bi bi-cash"></i></div><div><div class="stat-value" style="font-size:0.95rem;" id="statPay">—</div><div class="stat-label">Payment</div></div></div></div>
+      </div>
+
+      <!-- Admission & ID Card -->
+      <div class="portal-card mb-4" id="admission">
+        <div class="card-header-p"><i class="bi bi-person-badge me-2"></i>Admission Status, Number &amp; ID Card</div>
+        <div class="card-body-p" id="admissionBox">
+          <div class="empty-state py-3">
+            <i class="bi bi-hourglass-split"></i>
+            <h6 class="mt-2">Waiting for Admin approval</h6>
+            <p class="text-muted small mb-0">After you apply and the CEO approves, your Admission Number and Student ID Card will appear here for download.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment - only after 3 weeks of lectures -->
+      <div class="portal-card mb-4" id="payment">
+        <div class="card-header-p"><i class="bi bi-cash-stack me-2"></i>Make Payment</div>
+        <div class="card-body-p" id="paymentBox">
+          <p class="text-muted small">Payment is made only in this portal, and only opens <strong>3 weeks after lectures start</strong>.</p>
+          <div id="paymentContent"></div>
+        </div>
+      </div>
+
+      <!-- Materials -->
+      <div class="portal-card mb-4" id="materials">
+        <div class="card-header-p"><i class="bi bi-folder2-open me-2"></i>Reading Materials — Download</div>
+        <div class="card-body-p p-0">
+          <div class="empty-state py-4" id="stuMatEmpty">
+            <i class="bi bi-folder2-open"></i>
+            <h6 class="mt-2">No materials available yet</h6>
+            <p class="text-muted small mb-0">When the Admin uploads lecture notes, they appear here for download.</p>
+          </div>
+          <table class="table-portal d-none" id="stuMatTable">
+            <thead><tr><th>Title</th><th>Topic</th><th>File</th><th>Date</th><th>Download</th></tr></thead>
+            <tbody id="stuMatBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="portal-card mb-4" id="results">
+        <div class="card-header-p"><i class="bi bi-bar-chart me-2"></i>My Examination Results</div>
+        <div class="card-body-p p-0">
+          <div class="empty-state py-4" id="stuResEmpty">
+            <i class="bi bi-clipboard-data"></i>
+            <h6 class="mt-2">No results published yet</h6>
+            <p class="text-muted small mb-0">Results appear after the Admin uploads them.</p>
+          </div>
+          <table class="table-portal d-none" id="stuResTable">
+            <thead><tr><th>Student</th><th>Score</th><th>Grade</th><th>Date</th></tr></thead>
+            <tbody id="stuResBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/portal-data.js"></script>
+  <script>
+  (async function() {
+
+    const session = ASM.getStudentSession();
+    if (!session || !session.loggedIn) {
+      window.location.href = 'student-login.html';
+      document.body.style.visibility = 'hidden';
+    }
+
+    const email = (session && session.email) || '';
+    const name = (session && session.name) || 'Student';
+    document.getElementById('welcomeName').textContent = name;
+    document.getElementById('stuNameChip').textContent = name;
+
+    // Refresh shared data from online store so Phone B sees what Phone A did
+    await ASM.syncFromRemote();
+
+    document.getElementById('sidebarToggleBtn')?.addEventListener('click', () => {
+      document.getElementById('adminSidebar').classList.toggle('show');
+    });
+
+    const app = await ASM.getMyApplication();
+
+    if (app) {
+      document.getElementById('statProg').textContent = app.programme || '—';
+      document.getElementById('statStatus').textContent = app.status;
+      document.getElementById('statAdmNo').textContent = app.admissionNumber || '—';
+      document.getElementById('statPay').textContent = app.paymentStatus || 'Not Paid';
+
+      const box = document.getElementById('admissionBox');
+      if (app.status === 'Pending') {
+        box.innerHTML = '<div class="alert alert-warning mb-0"><i class="bi bi-hourglass-split me-2"></i><strong>Pending approval.</strong> The Admin (CEO Shuaibu Abubakar) has been notified. Once approved, your Admission Number and ID Card will be ready to download here.</div>';
+      } else if (app.status === 'Rejected') {
+        box.innerHTML = '<div class="alert alert-danger mb-0"><i class="bi bi-x-circle me-2"></i>Your application was not approved. Please contact the centre: 08082917651.</div>';
+      } else if (app.status === 'Approved') {
+        box.innerHTML = `
+          <div class="alert alert-success"><i class="bi bi-check-circle me-2"></i><strong>Admission Approved!</strong></div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <p class="mb-1"><strong>Admission Number:</strong> <span class="fs-5" style="color:var(--portal-primary);">${app.admissionNumber}</span></p>
+              <p class="mb-1"><strong>Programme:</strong> ${app.programme}</p>
+              <p class="mb-1"><strong>Lecture Start:</strong> ${app.lectureStartDate || '—'}</p>
+              <p class="mb-3"><strong>Payment Opens:</strong> ${app.paymentAllowedFrom || '—'} (3 weeks after lectures start)</p>
+              <button class="btn btn-portal-primary me-2" onclick="downloadAdmissionLetter()"><i class="bi bi-file-earmark-text me-1"></i> Download Admission Letter</button>
+              <button class="btn btn-portal-accent" onclick="downloadIDCard()"><i class="bi bi-person-badge me-1"></i> Download ID Card</button>
+            </div>
+            <div class="col-md-6">
+              <div id="idCardPreview" style="max-width:280px;border-radius:14px;overflow:hidden;border:2px solid #c9a227;box-shadow:0 8px 24px rgba(10,37,64,0.15);background:#fff;">
+                <div style="background:linear-gradient(145deg,#0a2540,#1a365d);color:#fff;padding:14px;text-align:center;">
+                  <div style="font-weight:800;font-size:12px;letter-spacing:1px;">A.S MATAWALLE</div>
+                  <div style="font-size:10px;opacity:0.9;">COMPUTER BUSINESS CENTRE</div>
+                  <div style="display:inline-block;margin-top:8px;background:linear-gradient(135deg,#c9a227,#e8c547);color:#0a2540;font-size:9px;font-weight:800;letter-spacing:1.5px;padding:2px 12px;border-radius:10px;">STUDENT ID CARD</div>
+                </div>
+                <div style="text-align:center;padding:14px 12px 8px;">
+                  ${app.passportPhoto
+                    ? '<img src="'+app.passportPhoto+'" alt="Passport" style="width:72px;height:72px;border-radius:50%;margin:0 auto 8px;object-fit:cover;border:3px solid #c9a227;display:block;box-shadow:0 2px 8px rgba(0,0,0,0.15);">'
+                    : '<div style="width:64px;height:64px;border-radius:50%;margin:0 auto 8px;background:linear-gradient(135deg,#0a2540,#1a365d);border:3px solid #c9a227;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#e8c547;">'+(app.fullName||'S').charAt(0).toUpperCase()+'</div>'}
+                  <div style="font-weight:700;color:#0a2540;font-size:14px;">${app.fullName}</div>
+                  <div style="font-size:11px;color:#c9a227;font-weight:600;margin-bottom:8px;">${app.programme}</div>
+                </div>
+                <div style="margin:0 12px 12px;background:#f8fafc;border-radius:8px;padding:8px 10px;font-size:11px;">
+                  <div style="display:flex;justify-content:space-between;padding:3px 0;"><span style="color:#64748b;">Adm. No.</span><strong style="color:#0a2540;">${app.admissionNumber}</strong></div>
+                  <div style="display:flex;justify-content:space-between;padding:3px 0;"><span style="color:#64748b;">Phone</span><strong style="color:#0a2540;">${app.phone||'—'}</strong></div>
+                  <div style="display:flex;justify-content:space-between;padding:3px 0;"><span style="color:#64748b;">Start</span><strong style="color:#0a2540;">${app.lectureStartDate||'—'}</strong></div>
+                  <div style="display:flex;justify-content:space-between;padding:3px 0;"><span style="color:#64748b;">Status</span><strong style="color:#059669;">ACTIVE</strong></div>
+                </div>
+                <div style="background:#0a2540;color:#e8c547;text-align:center;padding:8px;font-size:9px;font-weight:700;">CEO: Shuaibu Abubakar · 08082917651</div>
+              </div>
+            </div>
+          </div>`;
+      }
+    } else {
+      document.getElementById('admissionBox').innerHTML = '<div class="alert alert-info mb-0"><i class="bi bi-info-circle me-2"></i>No application found for this email. Please <a href="admission.html">apply online</a> first, then sign up with the same email.</div>';
+    }
+
+    // Payment section
+    const payContent = document.getElementById('paymentContent');
+    if (!app) {
+      payContent.innerHTML = '<p class="text-muted small mb-0">Apply and get approved first.</p>';
+    } else {
+      const check = ASM.canMakePayment(app);
+      if (app.paymentStatus === 'Paid') {
+        payContent.innerHTML = '<div class="alert alert-success mb-0"><i class="bi bi-check-circle me-2"></i>Payment completed. Thank you.</div>';
+      } else if (!check.allowed) {
+        payContent.innerHTML = '<div class="alert alert-warning mb-0"><i class="bi bi-lock me-2"></i>' + check.reason + '</div>' +
+          (app.lectureStartDate ? '<p class="small text-muted mt-2 mb-0">Lecture start: <strong>' + app.lectureStartDate + '</strong> · Payment opens: <strong>' + (app.paymentAllowedFrom || '—') + '</strong></p>' : '');
+      } else {
+        const fee = (app.programme || '').includes('6') ? '60000' : '30000';
+        payContent.innerHTML = `
+          <div class="alert alert-success small">Payment window is open.</div>
+          <p><strong>Amount:</strong> ₦${Number(fee).toLocaleString()}</p>
+          <p class="small mb-2"><strong>Bank:</strong> Opay &nbsp;|&nbsp; <strong>Account:</strong> 8082917651 &nbsp;|&nbsp; <strong>Name:</strong> Shuaibu Abubakar</p>
+          <div class="mb-2">
+            <label class="form-label-p">Upload Payment Receipt</label>
+            <input type="file" class="form-control form-control-p" id="payReceipt" accept="image/*,.pdf">
+          </div>
+          <button class="btn btn-portal-primary" onclick="submitPayment('${app.admissionNumber}')"><i class="bi bi-upload me-1"></i> Submit Receipt</button>`;
+      }
+    }
+
+    async function submitPayment(admNo) {
+      const f = document.getElementById('payReceipt');
+      if (!f || !f.files[0]) { alert('Please select a receipt file.'); return; }
+      if (app && app.id) {
+        await ASM.markPaidById(app.id);
+      }
+      alert('Receipt submitted. Admin will verify your payment.');
+      location.reload();
+    }
+
+    function downloadAdmissionLetter() {
+      if (!app || !app.admissionNumber) return;
+      const fee = (app.programme || '').includes('6') ? '₦60,000' : '₦30,000';
+      const duration = (app.programme || '').includes('6') ? 'Six (6) Months' : 'Three (3) Months';
+      const today = new Date().toLocaleDateString('en-NG', { day: 'numeric', month: 'long', year: 'numeric' });
+      const htmlDoc = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Admission Letter - ${app.admissionNumber}</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Open+Sans:wght@400;600;700&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Open Sans', Arial, sans-serif; background: #e8eef5; padding: 24px; color: #1a1a2e; }
+  .letter {
+    max-width: 800px; margin: 0 auto; background: #fff;
+    border: 3px solid #0a2540; box-shadow: 0 8px 32px rgba(10,37,64,0.15);
+    position: relative; overflow: hidden;
+  }
+  .letter::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 8px;
+    background: linear-gradient(90deg, #0a2540 0%, #c9a227 50%, #0a2540 100%);
+  }
+  .letter::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 8px;
+    background: linear-gradient(90deg, #0a2540 0%, #c9a227 50%, #0a2540 100%);
+  }
+  .header {
+    background: linear-gradient(135deg, #0a2540 0%, #1a365d 60%, #0f3460 100%);
+    color: #fff; padding: 28px 36px; text-align: center; position: relative;
+  }
+  .header .badge-gold {
+    display: inline-block; background: linear-gradient(135deg, #c9a227, #e8c547);
+    color: #0a2540; font-weight: 700; font-size: 11px; letter-spacing: 2px;
+    padding: 4px 16px; border-radius: 20px; margin-bottom: 12px; text-transform: uppercase;
+  }
+  .header h1 { font-family: 'Playfair Display', serif; font-size: 22px; margin-bottom: 4px; letter-spacing: 1px; }
+  .header h2 { font-size: 13px; font-weight: 400; opacity: 0.9; margin-bottom: 8px; }
+  .header .tagline { font-size: 11px; color: #e8c547; font-style: italic; }
+  .gold-line { height: 3px; background: linear-gradient(90deg, transparent, #c9a227, transparent); margin: 0; }
+  .body { padding: 32px 40px; }
+  .ref-row { display: flex; justify-content: space-between; margin-bottom: 24px; font-size: 13px; }
+  .ref-row strong { color: #0a2540; }
+  .title-block {
+    text-align: center; margin: 20px 0 28px;
+    background: linear-gradient(135deg, rgba(201,162,39,0.12), rgba(10,37,64,0.06));
+    border-left: 5px solid #c9a227; border-right: 5px solid #0a2540;
+    padding: 14px 20px;
+  }
+  .title-block h3 {
+    font-family: 'Playfair Display', serif; color: #0a2540; font-size: 20px;
+    letter-spacing: 3px; text-transform: uppercase;
+  }
+  .greeting { margin-bottom: 16px; font-size: 14px; line-height: 1.7; }
+  .details-table {
+    width: 100%; border-collapse: collapse; margin: 20px 0 24px;
+    font-size: 13.5px;
+  }
+  .details-table th {
+    background: #0a2540; color: #e8c547; text-align: left;
+    padding: 10px 14px; width: 38%; font-weight: 600;
+  }
+  .details-table td {
+    padding: 10px 14px; border-bottom: 1px solid #e2e8f0;
+    background: #f8fafc;
+  }
+  .details-table tr:nth-child(even) td { background: #fff; }
+  .congrats {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px solid #86efac; border-radius: 8px;
+    padding: 14px 18px; margin: 20px 0; font-size: 13.5px; line-height: 1.7;
+  }
+  .terms {
+    font-size: 12px; color: #475569; line-height: 1.65; margin: 18px 0;
+  }
+  .terms h4 { color: #0a2540; font-size: 13px; margin-bottom: 6px; }
+  .terms ol { padding-left: 18px; }
+  .sign-area {
+    display: flex; justify-content: space-between; margin-top: 40px; align-items: flex-end;
+  }
+  .sign-box { text-align: center; }
+  .sign-line {
+    width: 180px; border-top: 2px solid #0a2540; margin: 0 auto 6px; padding-top: 4px;
+  }
+  .sign-box .name { font-weight: 700; color: #0a2540; font-size: 13px; }
+  .sign-box .role { font-size: 11px; color: #c9a227; font-weight: 600; }
+  .stamp {
+    width: 90px; height: 90px; border: 3px double #c9a227; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    font-size: 9px; color: #0a2540; font-weight: 700; line-height: 1.3;
+    transform: rotate(-12deg); opacity: 0.85;
+  }
+  .footer-bar {
+    background: #0a2540; color: rgba(255,255,255,0.8); padding: 12px 36px;
+    font-size: 11px; text-align: center;
+  }
+  .footer-bar span { color: #e8c547; }
+  @media print {
+    body { background: #fff; padding: 0; }
+    .letter { box-shadow: none; }
+    .no-print { display: none !important; }
+  }
+</style></head><body>
+  <div class="no-print" style="text-align:center;margin-bottom:16px;">
+    <button onclick="window.print()" style="background:#0a2540;color:#fff;border:none;padding:10px 24px;border-radius:6px;font-weight:600;cursor:pointer;margin-right:8px;">Print / Save as PDF</button>
+    <button onclick="window.close()" style="background:#64748b;color:#fff;border:none;padding:10px 24px;border-radius:6px;cursor:pointer;">Close</button>
+  </div>
+  <div class="letter">
+    <div class="header">
+      <div class="badge-gold">Official Document</div>
+      <h1>A.S MATAWALLE</h1>
+      <h2>COMPUTER BUSINESS CENTRE UDAWA</h2>
+      <div class="tagline">Reliable Service, Lasting Solutions</div>
+    </div>
+    <div class="gold-line"></div>
+    <div class="body">
+      <div class="ref-row">
+        <div><strong>Ref:</strong> ASM/ADM/${app.admissionNumber}</div>
+        <div><strong>Date:</strong> ${today}</div>
+      </div>
+      <div class="title-block">
+        <h3>Offer of Admission</h3>
+      </div>
+      <div class="greeting">
+        Dear <strong>${app.fullName}</strong>,
+      </div>
+      <p style="font-size:14px;line-height:1.7;margin-bottom:12px;">
+        Following your application for computer training at <strong>A.S Matawalle Computer Business Centre Udawa</strong>,
+        we are pleased to inform you that you have been <strong style="color:#059669;">OFFERED ADMISSION</strong> into the programme stated below.
+      </p>
+      <div style="text-align:right;margin-bottom:12px;">
+        ${app.passportPhoto
+          ? '<img src="'+app.passportPhoto+'" alt="Passport" style="width:100px;height:120px;object-fit:cover;border:3px solid #0a2540;border-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,0.15);">'
+          : ''}
+      </div>
+      <table class="details-table">
+        <tr><th>Admission Number</th><td><strong style="color:#0a2540;font-size:15px;">${app.admissionNumber}</strong></td></tr>
+        <tr><th>Full Name</th><td>${app.fullName}</td></tr>
+        <tr><th>Programme</th><td>${app.programme}</td></tr>
+        <tr><th>Duration</th><td>${duration}</td></tr>
+        <tr><th>Programme Fee</th><td><strong>${fee}</strong></td></tr>
+        <tr><th>Lecture Start Date</th><td>${app.lectureStartDate || '—'}</td></tr>
+        <tr><th>Payment Opens</th><td>${app.paymentAllowedFrom || '—'} <em>(3 weeks after lectures start)</em></td></tr>
+        <tr><th>Gender</th><td>${app.gender || '—'}</td></tr>
+        <tr><th>Phone</th><td>${app.phone || '—'}</td></tr>
+        <tr><th>Email</th><td>${app.email || '—'}</td></tr>
+        <tr><th>State / LGA</th><td>${(app.state || '—') + ' / ' + (app.lga || '—')}</td></tr>
+      </table>
+      <div class="congrats">
+        <strong>Congratulations!</strong> Your Student ID Card is available for download in your Student Portal.
+        Please keep this admission letter safe. Present it when reporting for lectures.
+      </div>
+      <div class="terms">
+        <h4>Important Conditions</h4>
+        <ol>
+          <li>You may begin lectures on the start date above.</li>
+          <li>Programme fee is payable only through your Student Portal, starting 3 weeks after lectures commence.</li>
+          <li>Payment account: <strong>Opay — 8082917651 — Shuaibu Abubakar</strong>.</li>
+          <li>Regular attendance and completion of practical work are required for certification.</li>
+          <li>This offer is valid for the current training session only.</li>
+        </ol>
+      </div>
+      <div class="sign-area">
+        <div class="sign-box">
+          <div class="sign-line"></div>
+          <div class="name">Shuaibu Abubakar</div>
+          <div class="role">CEO &amp; Owner</div>
+          <div style="font-size:10px;color:#64748b;margin-top:2px;">B.Sc. Chemistry (FUDMA)</div>
+        </div>
+        <div class="stamp">A.S MATAWALLE<br>OFFICIAL<br>SEAL<br>2026</div>
+      </div>
+    </div>
+    <div class="footer-bar">
+      No. 9 Unguwan Daudu, Udawa &nbsp;|&nbsp; Tel: <span>08082917651</span> &nbsp;|&nbsp; Email: <span>asmatawalle@gmail.com</span>
+    </div>
+  </div>
+</body></html>`;
+      const w = window.open('', '_blank', 'width=900,height=1000');
+      w.document.write(htmlDoc);
+      w.document.close();
+    }
+
+    function downloadIDCard() {
+      if (!app || !app.admissionNumber) return;
+      const fee = (app.programme || '').includes('6') ? '6 Months Diploma' : '3 Months Certificate';
+      const htmlDoc = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Student ID Card - ${app.admissionNumber}</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Open+Sans:wght@400;600&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Open Sans', Arial, sans-serif; background: #dbe4f0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
+  .actions { margin-bottom: 20px; }
+  .actions button {
+    background: #0a2540; color: #fff; border: none; padding: 10px 22px; border-radius: 6px;
+    font-weight: 600; cursor: pointer; margin: 0 6px; font-size: 14px;
+  }
+  .actions button.sec { background: #64748b; }
+  .card {
+    width: 340px; height: 540px; border-radius: 16px; overflow: hidden;
+    box-shadow: 0 12px 40px rgba(10,37,64,0.25); position: relative;
+    background: #fff; border: 2px solid #c9a227;
+  }
+  .card-top {
+    background: linear-gradient(145deg, #0a2540 0%, #1a365d 50%, #0f3460 100%);
+    padding: 18px 16px 14px; text-align: center; color: #fff; position: relative;
+  }
+  .card-top::after {
+    content: ''; position: absolute; bottom: -12px; left: 0; right: 0; height: 24px;
+    background: linear-gradient(145deg, #0a2540, #1a365d);
+    clip-path: ellipse(55% 100% at 50% 0%);
+  }
+  .card-top .org {
+    font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 13px;
+    letter-spacing: 1.5px; line-height: 1.3;
+  }
+  .card-top .sub {
+    font-size: 9px; color: #e8c547; letter-spacing: 1px; margin-top: 2px;
+    text-transform: uppercase; font-weight: 600;
+  }
+  .card-top .id-label {
+    display: inline-block; margin-top: 10px; background: linear-gradient(135deg, #c9a227, #e8c547);
+    color: #0a2540; font-family: 'Montserrat', sans-serif; font-weight: 800;
+    font-size: 10px; letter-spacing: 2px; padding: 3px 14px; border-radius: 12px;
+  }
+  .photo-area {
+    text-align: center; margin-top: 28px; margin-bottom: 12px;
+  }
+  .photo-circle {
+    width: 100px; height: 100px; border-radius: 50%; margin: 0 auto;
+    background: linear-gradient(135deg, #0a2540, #1a365d);
+    border: 4px solid #c9a227; display: flex; align-items: center; justify-content: center;
+    font-family: 'Montserrat', sans-serif; font-size: 36px; font-weight: 800; color: #e8c547;
+    box-shadow: 0 4px 16px rgba(10,37,64,0.2);
+  }
+  .photo-img {
+    width: 110px; height: 130px; object-fit: cover; object-position: center top;
+    border-radius: 8px; margin: 0 auto; display: block;
+    border: 3px solid #c9a227; box-shadow: 0 4px 16px rgba(10,37,64,0.2);
+    background: #f1f5f9;
+  }
+  .stu-name {
+    text-align: center; font-family: 'Montserrat', sans-serif; font-weight: 700;
+    font-size: 16px; color: #0a2540; padding: 0 16px; margin-bottom: 4px;
+  }
+  .stu-prog {
+    text-align: center; font-size: 11px; color: #c9a227; font-weight: 600;
+    margin-bottom: 14px; padding: 0 12px;
+  }
+  .info-block {
+    margin: 0 18px; background: linear-gradient(180deg, #f8fafc, #f1f5f9);
+    border-radius: 10px; border: 1px solid #e2e8f0; padding: 12px 14px;
+  }
+  .info-row {
+    display: flex; justify-content: space-between; font-size: 11px;
+    padding: 5px 0; border-bottom: 1px dashed #e2e8f0;
+  }
+  .info-row:last-child { border-bottom: none; }
+  .info-row .lbl { color: #64748b; font-weight: 600; }
+  .info-row .val { color: #0a2540; font-weight: 700; text-align: right; max-width: 58%; }
+  .card-bottom {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: linear-gradient(135deg, #0a2540, #1a365d);
+    padding: 12px 16px; text-align: center; color: rgba(255,255,255,0.85);
+  }
+  .card-bottom .ceo { font-size: 10px; color: #e8c547; font-weight: 700; margin-bottom: 2px; }
+  .card-bottom .addr { font-size: 8.5px; line-height: 1.4; }
+  .gold-strip {
+    height: 4px; background: linear-gradient(90deg, #c9a227, #e8c547, #c9a227);
+  }
+  @media print {
+    body { background: #fff; }
+    .actions { display: none !important; }
+    .card { box-shadow: none; }
+  }
+</style></head><body>
+  <div class="actions">
+    <button onclick="window.print()">Print / Save as PDF</button>
+    <button class="sec" onclick="window.close()">Close</button>
+  </div>
+  <div class="card">
+    <div class="card-top">
+      <div class="org">A.S MATAWALLE</div>
+      <div class="org" style="font-size:11px;font-weight:700;">COMPUTER BUSINESS CENTRE</div>
+      <div class="sub">Udawa · Reliable Service, Lasting Solutions</div>
+      <div class="id-label">STUDENT ID CARD</div>
+    </div>
+    <div class="photo-area">
+      ${app.passportPhoto
+        ? '<img class="photo-img" src="'+app.passportPhoto+'" alt="Passport Photograph">'
+        : '<div class="photo-circle">'+(app.fullName || 'S').charAt(0).toUpperCase()+'</div>'}
+    </div>
+    <div class="stu-name">${app.fullName}</div>
+    <div class="stu-prog">${app.programme}</div>
+    <div class="info-block">
+      <div class="info-row"><span class="lbl">Adm. No.</span><span class="val">${app.admissionNumber}</span></div>
+      <div class="info-row"><span class="lbl">Programme</span><span class="val">${fee}</span></div>
+      <div class="info-row"><span class="lbl">Gender</span><span class="val">${app.gender || '—'}</span></div>
+      <div class="info-row"><span class="lbl">Phone</span><span class="val">${app.phone || '—'}</span></div>
+      <div class="info-row"><span class="lbl">Session Start</span><span class="val">${app.lectureStartDate || '—'}</span></div>
+      <div class="info-row"><span class="lbl">Status</span><span class="val" style="color:#059669;">ACTIVE</span></div>
+    </div>
+    <div style="flex:1;"></div>
+    <div class="gold-strip"></div>
+    <div class="card-bottom">
+      <div class="ceo">CEO: Shuaibu Abubakar</div>
+      <div class="addr">No. 9 Unguwan Daudu, Udawa · 08082917651<br>asmatawalle@gmail.com</div>
+    </div>
+  </div>
+</body></html>`;
+      const w = window.open('', '_blank', 'width=420,height=700');
+      w.document.write(htmlDoc);
+      w.document.close();
+    }
+
+        // Materials
+    const mats = JSON.parse(localStorage.getItem('asm_materials') || '[]');
+    if (mats.length) {
+      document.getElementById('stuMatEmpty').classList.add('d-none');
+      document.getElementById('stuMatTable').classList.remove('d-none');
+      mats.forEach(m => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<td>' + m.title + '</td><td>' + m.topic + '</td><td>' + m.file + '</td><td>' + m.date + '</td><td><button class="btn btn-portal-accent btn-sm" onclick="alert(\'Download: ' + m.file + '\')"><i class="bi bi-download"></i> Download</button></td>';
+        document.getElementById('stuMatBody').appendChild(tr);
+      });
+    }
+
+    // Results
+    const results = JSON.parse(localStorage.getItem('asm_results') || '[]');
+    if (results.length) {
+      document.getElementById('stuResEmpty').classList.add('d-none');
+      document.getElementById('stuResTable').classList.remove('d-none');
+      results.forEach(r => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<td>' + r.student + '</td><td>' + r.score + '%</td><td>' + r.grade + '</td><td>' + r.date + '</td>';
+        document.getElementById('stuResBody').appendChild(tr);
+      });
+    }
+  
+  })();
+  </script>
+</body>
+</html>
